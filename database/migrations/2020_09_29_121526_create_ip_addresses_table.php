@@ -16,7 +16,7 @@ class CreateIpAddressesTable extends Migration
         Schema::create('ip_addresses', function (Blueprint $table) {
             $table->id();
             $table->ipAddress('ip');
-            $table->bigInteger('ticket_id');
+            $table->unsignedBigInteger('ticket_id');
         });
     }
 

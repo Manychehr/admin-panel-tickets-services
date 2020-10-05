@@ -15,9 +15,10 @@ class CreateAuthorsTable extends Migration
     {
         Schema::create('authors', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('api_id');
-            $table->bigInteger('service_id');
-            $table->string('name');
+            $table->unsignedBigInteger('api_id');
+            $table->unsignedBigInteger('service_id');
+            $table->string('name')->nullable();
+            $table->string('email')->nullable();
             $table->json('data')->nullable();
         });
     }

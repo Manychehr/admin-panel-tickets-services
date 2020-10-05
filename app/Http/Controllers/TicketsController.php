@@ -2,19 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\TicketsDataTable;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 
-class TicketController extends Controller
+class TicketsController extends AuthBaseController
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(TicketsDataTable $dataTable)
     {
-        //
+        $block_title = 'Tickets List';
+        $jsroute = 'tickets.index';
+        $columnsShowMenu = []; // $this->getColumnsShowMenu();
+        $showFiltersForm = true;
+        return $dataTable->render('DataTable', compact('block_title', 'jsroute', 'columnsShowMenu', 'showFiltersForm'));
     }
 
     /**
@@ -44,9 +49,12 @@ class TicketController extends Controller
      * @param  \App\Models\Ticket  $ticket
      * @return \Illuminate\Http\Response
      */
-    public function show(Ticket $ticket)
+    public function show(Request $request, Ticket $ticket)
     {
-        //
+        if($request->ajax()){
+            return view('components.tickets.show', compact('ticket'));
+        }
+        return view('components.tickets.full.show', compact('ticket'));
     }
 
     /**
@@ -81,5 +89,19 @@ class TicketController extends Controller
     public function destroy(Ticket $ticket)
     {
         //
+    }
+
+    public function hide_ticket(Ticket $ticket)
+    {
+        $ticket->show = false;
+        $ticket->save();
+        return response()->json(['success' => 'Hide ticket successfully']);
+    }
+
+    public function hide_user_tickets(Ticket $ticket)
+    {
+        Ticket::where('author_id', $ticket->author_id)->update(['show' => false]);
+
+        return response()->json(['success' => 'Hide user tickets successfully']);
     }
 }

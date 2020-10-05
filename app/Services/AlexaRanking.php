@@ -15,13 +15,14 @@ Class AlexaRanking
 
     private $api_url = 'http://data.alexa.com/data';
 
-    public function __construct($url)
+    /* public function __construct($url)
     {
         $this->output = $this->getRank($url);
-    }
+    } */
 
     public function getRank($url)
     {
+        $this->output = false;
         $xml = $this->request("http://data.alexa.com/data?cli=10&url=$url");
         if (empty($xml)) {
             return false;
@@ -31,15 +32,12 @@ Class AlexaRanking
         $doc = simplexml_load_string($xml);
 
         if ($doc === false) {
-            /* $errors = libxml_get_errors();
-            foreach ($errors as $error) {
-                echo display_xml_error($error, $xml);
-            } */
             libxml_clear_errors();
             return false;
         }
-        
-        return $doc;
+        $this->output = $doc;
+
+        return $this->rank();
     }
 
     function request($url, $post = 0) {

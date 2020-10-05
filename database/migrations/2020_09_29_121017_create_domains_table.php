@@ -15,9 +15,9 @@ class CreateDomainsTable extends Migration
     {
         Schema::create('domains', function (Blueprint $table) {
             $table->id();
-            $table->string('host')->unique();
+            $table->string('host');
             $table->integer('rank')->nullable();
-            $table->bigInteger('ticket_id');
+            $table->unsignedBigInteger('ticket_id');
         });
     }
 

@@ -8,7 +8,7 @@ use App\Http\Requests\StoreOptionsRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class OptionsController extends Controller
+class OptionsController extends AuthBaseController
 {
     /**
      * Display a listing of the resource.

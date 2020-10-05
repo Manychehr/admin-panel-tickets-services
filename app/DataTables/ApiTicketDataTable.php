@@ -21,7 +21,10 @@ class ApiTicketDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('action', 'components.crud_buttons');
+            ->addColumn('action', 'components.crud_buttons')
+            ->editColumn('subdomain', 'components.api_details.import_button')
+            ->rawColumns(['action', 'subdomain']);
+            
     }
 
     /**

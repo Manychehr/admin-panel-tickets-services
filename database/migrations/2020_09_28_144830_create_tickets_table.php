@@ -15,9 +15,9 @@ class CreateTicketsTable extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('api_id');
+            $table->unsignedBigInteger('api_id');
             $table->unsignedBigInteger('service_id');
-            $table->bigInteger('author_id')->nullable();
+            $table->unsignedBigInteger('author_id')->nullable();
             $table->boolean('in_scheme')->default(false);
             $table->boolean('show')->default(true);
             $table->json('data')->nullable();

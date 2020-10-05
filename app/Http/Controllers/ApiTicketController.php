@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\ApiTicketDataTable;
 use App\Http\Requests\StoreApiTicketRequest;
+use App\Jobs\ImportZendeskTicketsJob;
 use App\Models\ApiTicket;
 use Illuminate\Http\Request;
 
@@ -96,5 +97,11 @@ class ApiTicketController extends Controller
     {
         $apiTicket->delete();
         return response()->json(['success' => 'Api Details destroy successfully']);
+    }
+
+    public function send_import(ApiTicket $apiTicket)
+    {
+        dispatch(new ImportZendeskTicketsJob($apiTicket->id, 1, 1));
+        return response()->json(['success' => 'Api Details send-import successfully']);
     }
 }

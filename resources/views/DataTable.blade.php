@@ -34,7 +34,12 @@
         .sorting_1 {
             background-color: #f1f1f1;
         }
-        
+        /* tfoot {
+            display: table-header-group;
+        }
+        tfoot input {
+            width: 100%;
+        } */
     </style>
 @endpush
 
@@ -51,31 +56,13 @@
                 <button type="button" class="btn-block-option" id="reLoad">
                     <i class="fa fa-repeat"></i> ReLoad
                 </button>
-                {{-- @if (!empty($columnsShowMenu))
-                <div class="dropdown">
-                    <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-eye"></i>&nbsp; Columns
-                    </button>
-                    <form class="dropdown-menu dropdown-menu-right p-4">
-                        <div class="form-group row">
-                            <div class="col-12">
-                                @foreach ($columnsShowMenu as $column)
-                                <div class="custom-control custom-checkbox mb-5">
-                                    <input class="custom-control-input columns-show-menu" type="checkbox" data-column="{{ $loop->index }}" id="{{ $column['id'] }}" value="1" {{ $column['checked'] ? 'checked=""' : '' }}>
-                                    <label class="custom-control-label" for="{{ $column['id'] }}">{{ $column['txt'] }}</label>
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                @endif --}}
-            </div>
+             </div>
         </div>
         
         <div class="block-content block-content-full">
             <div class="row justify-content-between">
                 <div class="ml-1 p-10">
+                    @if (!empty($ShowButtonCreate))
                     <span class="js-tooltip-enabled" data-toggle="tooltip" data-placement="top" title="" data-original-title="Create">
                         <button 
                             type="button" 
@@ -88,16 +75,22 @@
                             <i class="fa fa-plus"></i>&nbsp;Create
                         </button>
                     </span>
+                    @endif
                 </div>
                 <div class="p-10">
-                    {{-- <a href="{{ route('import.index') }}" class="btn btn-alt-danger mr-5 mb-5">
+                    <a href="{{ route('home') }}" class="btn btn-alt-danger mr-5 mb-5">
                         <i class="fa fa-download mr-5"></i>Import
                     </a>
-                    <a href="{{ route('export.index') }}" class="btn btn-alt-warning mr-5 mb-5">
+                    <a href="{{ route('home') }}" class="btn btn-alt-warning mr-5 mb-5">
                         <i class="fa fa-upload mr-5"></i>Export
-                    </a> --}}
+                    </a>
                 </div>
-              </div>
+            </div>
+
+            @if (!empty($showFiltersForm))
+                @include('components.tickets.filters-form')
+            @endif
+
             {{ $dataTable->table() }}
         </div>
     </div>
@@ -117,6 +110,9 @@
         var myTable = null;
         function drawTableCallback(e) {
             $('[data-toggle="tooltip"]').tooltip({trigger: "hover"});
+        }
+        function filterColumn (i, val) {
+            myTable.column(i).search(val, false, false, true).draw()
         }
     </script>
 
@@ -185,7 +181,9 @@
             $('body').on('click', '.deleteItem', function () {
                 var model_id = $(this).data("id");
                 var confirmtext = $(this).data("confirm");
-                confirm(confirmtext);
+                if(!confirm(confirmtext)) { 
+                    return false 
+                }
                 $.ajax({
                     type: "delete",
                     url: '{{ route($jsroute) }}/'+ model_id,
@@ -202,19 +200,22 @@
                 })
             })
 
-            $('body').on('click', '.addBlacklistItem', function () {
-                var model_id = $(this).data("id");
-                var confirmtext = $(this).data("confirm");
-                confirm(confirmtext);
+            $('body').on('click', '.eventItem', function () {
+                let model_id = $(this).data("id")
+                let metod = $(this).data("metod")
+                let confirmtext = $(this).data("confirm")
+                if(!confirm(confirmtext)) { 
+                    return false 
+                }
                 $.ajax({
                     type: "post",
-                    url: '{{ route($jsroute) }}/'+ model_id + '/blacklist',
+                    url: '{{ route($jsroute) }}/'+ model_id + '/' + metod,
                     dataType: 'json',
                     success: function (json) {
                         showNotify('success', json.success)
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
-                        showNotify('danger', 'add to blacklist failed! :-(')
+                        showNotify('danger', metod + ' failed! :-(')
                     },
                     complete: function() {
                         myTable.draw()
@@ -222,7 +223,7 @@
                 })
             })
             
-            $('body').on('click', '.updatednsItem', function () {
+            /* $('body').on('click', '.updatednsItem', function () {
                 var model_id = $(this).data("id");
                 var confirmtext = $(this).data("confirm");
                 // confirm(confirmtext);
@@ -240,9 +241,9 @@
                         myTable.draw()
                     }
                 })
-            })
+            }) */
 
-            $('body').on('click', '.importItemDns', function () {
+            /* $('body').on('click', '.importItemDns', function () {
                 var model_id = $(this).data("id");
                 var confirmtext = $(this).data("confirm");
                 // confirm(confirmtext);
@@ -260,9 +261,9 @@
                         myTable.draw()
                     }
                 })
-            })
+            } */)
 
-            $('body').on('click', '.importItemSubdomains', function () {
+            /* $('body').on('click', '.importItemSubdomains', function () {
                 var model_id = $(this).data("id");
                 var confirmtext = $(this).data("confirm");
                 // confirm(confirmtext);
@@ -280,7 +281,7 @@
                         myTable.draw()
                     }
                 })
-            })
+            }) */
             
             function showNotify(type, message) {
                 Codebase.helpers('notify', { align: 'right', from: 'top', type: type, icon: 'fa fa-times', message: message })
@@ -289,6 +290,16 @@
             function editDefaultForm() {
                 return ` @include('components.editDefaultForm') `;
             }
+
+            $('body').on('keyup click', '#filter-author', function () {
+                filterColumn (1, $(this).val())
+            })
+            $('body').on('keyup click', '#filter-domain', function () {
+                filterColumn (4, $(this).val())
+            })
+            $('body').on('keyup click', '#filter-ip-address', function () {
+                filterColumn (5, $(this).val())
+            })
         })
     </script>
 @endpush

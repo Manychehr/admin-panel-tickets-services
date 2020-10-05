@@ -3,11 +3,13 @@
 namespace App\DataTables;
 
 use App\Models\Ticket;
+use Carbon\Carbon;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
+use Illuminate\Support\Str;
 
 class TicketsDataTable extends DataTable
 {
@@ -21,7 +23,48 @@ class TicketsDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('action', 'tickets.action');
+            ->setFilteredRecords(100)
+            ->filterColumn('domains_count', function($query, $value) {
+                $query->whereHas('domains', function ($query) use ($value) {
+                   // $query->where('steam_room_id', '=', $values);
+                    $query->where('host', 'like', "%{$value}%");
+                });
+            })
+            ->filterColumn('ip_addresses_count', function($query, $value) {
+                $query->whereHas('ip_addresses', function ($query) use ($value) {
+                   $query->where('ip', '=', $value);
+                });
+            })
+            ->filterColumn('author', function($query, $value) {
+                $query->whereHas('author', function ($query) use ($value) {
+                    if (strpos($value, '@') === false) {
+                        $query->where('name', 'like', "%{$value}%");
+                    } else {
+                        $query->where('email', 'like', "%{$value}%");
+                    }
+                });
+            })
+
+            ->setRowAttr([
+                'style' => function(Ticket $model) {
+                    if ($model->in_scheme) {
+                        return 'background-color: #fae9e8!important';
+                    }
+                    return '';
+                },
+            ])
+            ->addColumn('action', 'tickets.action')
+            ->editColumn('created_at', function (Ticket $model) {
+                // return (new Carbon($model->data['created_at']))->format('Y-m-d H:m');
+                return $model->created_at->format('Y-m-d H:m');
+            })
+            ->editColumn('title', function (Ticket $model) {
+                return '<a href="' . route('api_tickets.show', $model->id) . '" target="_blank">' . Str::limit($model->data['subject'], 20, ' (...)') . '</a>';
+            })
+            ->editColumn('author', function (Ticket $model) {
+                return Str::limit($model->author->name, 20, '...');
+            })
+            ->rawColumns(['action', 'title']);
     }
 
     /**
@@ -32,7 +75,7 @@ class TicketsDataTable extends DataTable
      */
     public function query(Ticket $model)
     {
-        return $model->newQuery();
+        return $model->newQuery()->where('show', true)->withCount('domains')->withCount('ip_addresses');
     }
 
     /**
@@ -43,18 +86,30 @@ class TicketsDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('tickets-table')
+                    ->setTableId('my-table')
+                    ->addTableClass('table table-bordered table-striped table-vcenter')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
-                    ->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->buttons(
-                        Button::make('create'),
-                        Button::make('export'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    );
+                    ->dom('rtip')
+                    ->orderBy(0)
+                    // ->lengthMenu([[ 100, 250, 500], [ '100 rows', '250 rows', '500 rows']])
+                    ->parameters([
+                        'drawCallback' => 'function(e) { drawTableCallback(e) }',
+                        'initComplete' => 'function() { myTable = window.LaravelDataTables["my-table"]; }',
+                        /* 'initComplete' => 'function(settings, json) { 
+                            myTable = window.LaravelDataTables["my-table"]; 
+                            console.log(settings, json);
+                            this.api().columns().every(function () {
+                                var column = this;
+                                if(settings.aoColumns[column[0][0]].searchable) {
+                                    var input = document.createElement("input");
+                                    $(input).appendTo( $(column.footer()).empty() ).on("change", function () {
+                                        column.search($(this).val(), false, false, true).draw();
+                                    });
+                                }
+                            });
+                        }', */
+                    ]);
     }
 
     /**
@@ -65,15 +120,20 @@ class TicketsDataTable extends DataTable
     protected function getColumns()
     {
         return [
+            
+            Column::make('api_id')->title('Id')->searchable(false),
+            Column::make('author')->title('Author')->orderable(false),
+            Column::make('title')->searchable(false)->searchable(false)->orderable(false),
+            Column::make('created_at')->title('Date')
+                    ->searchable(false),
+            Column::make('domains_count')->title('Domains')->orderable(false),
+            Column::make('ip_addresses_count')->title('Ip'),
             Column::computed('action')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
-            Column::make('id'),
-            Column::make('add your columns'),
-            Column::make('created_at'),
-            Column::make('updated_at'),
+                    ->searchable(false)
+                    ->exportable(false)
+                    ->printable(false)
+                    ->width(60)
+                    ->addClass('text-center'),
         ];
     }
 

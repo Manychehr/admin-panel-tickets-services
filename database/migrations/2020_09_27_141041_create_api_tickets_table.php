@@ -22,6 +22,7 @@ class CreateApiTicketsTable extends Migration
             $table->string('secret_key')->nullable();
             $table->string('url')->nullable();
             $table->timestamp('import_at')->nullable();
+            $table->timestamp('update_at')->nullable();
         });
     }
 

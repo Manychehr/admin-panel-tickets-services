@@ -15,7 +15,7 @@ class ParsService {
         return [];
     }
 
-    static function validDomains(array $domains, $key = 1, $result = [])
+    public static function validDomains(array $domains, $key = 1, $result = [])
     {
         $rules = self::getDomainRules();
         foreach ($domains as $domain) {
