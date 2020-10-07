@@ -59,7 +59,7 @@ class TicketsDataTable extends DataTable
                 return $model->created_at->format('Y-m-d H:m');
             })
             ->editColumn('title', function (Ticket $model) {
-                return '<a href="' . route('api_tickets.show', $model->id) . '" target="_blank">' . Str::limit($model->data['subject'], 20, ' (...)') . '</a>';
+                return '<a href="' . route('tickets.full-show', $model->id) . '" target="_blank">' . Str::limit($model->data['subject'], 20, ' (...)') . '</a>';
             })
             ->editColumn('author', function (Ticket $model) {
                 return Str::limit($model->author->name, 20, '...');

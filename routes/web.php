@@ -20,6 +20,7 @@ Auth::routes();
 Route::get('/', 'App\Http\Controllers\TicketsController@index')->name('home');
 
 Route::resource('/tickets', 'App\Http\Controllers\TicketsController');
+Route::get('/tickets/{ticket}/full-show', 'App\Http\Controllers\TicketsController@full_show')->name('tickets.full-show');
 Route::post('/tickets/{ticket}/hide-ticket', 'App\Http\Controllers\TicketsController@hide_ticket')->name('tickets.hide-ticket');
 Route::post('/tickets/{ticket}/hide_user_tickets', 'App\Http\Controllers\TicketsController@hide-user-tickets')->name('tickets.hide-user-tickets');
 

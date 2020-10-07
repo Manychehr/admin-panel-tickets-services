@@ -31,4 +31,20 @@ class Comment extends Model
     protected $casts = [
         'data' => 'array',
     ];
+
+    /**
+     * Get the author that owns the comment.
+     */
+    public function author()
+    {
+        return $this->belongsTo(Author::class, 'author_id', 'api_id');
+    }
+
+    public function get_attachments()
+    {
+        if (!empty($this->data['attachments'])) {
+            return $this->data['attachments'];
+        }
+        return [];
+    }
 }

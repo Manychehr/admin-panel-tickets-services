@@ -33,6 +33,11 @@ class Ticket extends Model
         return $this->hasMany(Domain::class, 'ticket_id', 'api_id');
     }
 
+    public function domains_count()
+    {
+        return $this->domains()->count();
+    }
+
     public function domains_order_rank()
     {
         return $this->domains()->orderBy('rank')->get();
@@ -46,6 +51,11 @@ class Ticket extends Model
         return $this->hasMany(IpAddress::class, 'ticket_id', 'api_id');
     }
 
+    public function ip_addresses_count()
+    {
+        return $this->ip_addresses()->count();
+    }
+
     /**
      * Get the comments.
      */
@@ -53,6 +63,19 @@ class Ticket extends Model
     {
         return $this->hasMany(Comment::class, 'ticket_id', 'api_id');
     }
+
+    public function comments_get_attachments($attachments=[])
+    {
+        if (!empty($comments = $this->comments()->where('data->attachments', '!=', '[]')->get())) {
+            foreach ($comments as $comment) {
+                foreach ($comment->get_attachments() as $attachment) {
+                    $attachments[] = $attachment;
+                }
+            }
+        }
+        return $attachments;
+    }
+    
 
     /**
      * Get the authorthat owns the ticket.

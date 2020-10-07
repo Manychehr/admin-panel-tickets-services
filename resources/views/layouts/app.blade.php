@@ -97,9 +97,9 @@
         <!-- END Page Container -->
 
         <!-- Codebase JS -->
-        <script src="assets/js/codebase.core.min.js"></script>
-        <script src="assets/js/codebase.app.min.js"></script>
-        <script src="assets/js/plugins/bootstrap-notify/bootstrap-notify.min.js"></script>
+        <script src="{{ asset('assets/js/codebase.core.min.js') }}"></script>
+        <script src="{{ asset('assets/js/codebase.app.min.js') }}"></script>
+        <script src="{{ asset('assets/js/plugins/bootstrap-notify/bootstrap-notify.min.js') }}"></script>
         <script>jQuery(function(){ Codebase.helpers('notify'); });</script>
         @stack('js_after')
     </body>

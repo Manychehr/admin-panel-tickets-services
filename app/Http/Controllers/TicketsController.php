@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\CommentsDataTable;
 use App\DataTables\TicketsDataTable;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
@@ -51,12 +52,22 @@ class TicketsController extends AuthBaseController
      */
     public function show(Request $request, Ticket $ticket)
     {
-        if($request->ajax()){
-            return view('components.tickets.show', compact('ticket'));
-        }
-        return view('components.tickets.full.show', compact('ticket'));
+        return view('components.tickets.show', compact('ticket'));
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Ticket  $ticket
+     * @return \Illuminate\Http\Response
+     */
+    public function full_show(Request $request, Ticket $ticket)
+    {
+        $dataTable = new CommentsDataTable($ticket);
+
+        return $dataTable->render('components.tickets.full-show', compact('ticket'));
+    }
+    
     /**
      * Show the form for editing the specified resource.
      *
