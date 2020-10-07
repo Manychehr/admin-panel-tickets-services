@@ -31,4 +31,17 @@ class Author extends Model
     protected $casts = [
         'data' => 'array',
     ];
+
+    /**
+     * Get the service that owns the Author.
+     */
+    public function service()
+    {
+        return $this->belongsTo(ApiTicket::class, 'service_id', 'id');
+    }
+
+    public static function hasHide()
+    {
+        return self::where('show_tickets', false)->count() > 0;
+    }
 }

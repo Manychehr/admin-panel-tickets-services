@@ -19,6 +19,7 @@ class CreateAuthorsTable extends Migration
             $table->unsignedBigInteger('service_id');
             $table->string('name')->nullable();
             $table->string('email')->nullable();
+            $table->boolean('show_tickets')->default(true);
             $table->json('data')->nullable();
         });
     }

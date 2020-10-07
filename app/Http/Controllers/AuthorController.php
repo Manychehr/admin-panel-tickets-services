@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\AuthorsDataTable;
 use App\Models\Author;
 use Illuminate\Http\Request;
 
@@ -12,9 +13,14 @@ class AuthorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(AuthorsDataTable $dataTable)
     {
-        //
+        $block_title = 'Authors List';
+        $jsroute = 'authors.index';
+        $columnsShowMenu = []; // $this->getColumnsShowMenu();
+        $showHideListLink = false;
+        $showFiltersForm = false;
+        return $dataTable->render('DataTable', compact('block_title', 'jsroute', 'columnsShowMenu', 'showFiltersForm', 'showHideListLink'));
     }
 
     /**
@@ -81,5 +87,21 @@ class AuthorController extends Controller
     public function destroy(Author $author)
     {
         //
+    }
+
+    public function show_ticket(Author $author)
+    {
+        $author->show_tickets = true;
+        $author->save();
+
+        return response()->json(['success' => 'Show user tickets successfully']);
+    }
+
+    public function hide_ticket(Author $author)
+    {
+        $author->show_tickets = false;
+        $author->save();
+
+        return response()->json(['success' => 'Hide user tickets successfully']);
     }
 }

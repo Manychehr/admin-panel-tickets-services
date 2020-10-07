@@ -75,7 +75,6 @@ class Ticket extends Model
         }
         return $attachments;
     }
-    
 
     /**
      * Get the authorthat owns the ticket.
@@ -83,5 +82,18 @@ class Ticket extends Model
     public function author()
     {
         return $this->belongsTo(Author::class, 'author_id', 'api_id');
+    }
+
+    public function getNotes()
+    {
+        if (!empty($this->data['custom_fields']) && !empty($this->data['custom_fields']['notes'])) {
+            return (string)$this->data['custom_fields']['notes'];
+        }
+        return 'no notes';
+    }
+
+    public static function hasHide()
+    {
+        return self::where('show', false)->count() > 0;
     }
 }

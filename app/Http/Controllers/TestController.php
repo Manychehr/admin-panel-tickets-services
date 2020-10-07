@@ -22,4 +22,37 @@ class TestController extends Controller
         ];
         return view('test', compact('result', 'test_text'));
     }
+
+    public function zendesk($api_id)
+    {
+        $api = \App\Services\ImportZendeskService::getApi((int)$api_id);
+        ddd($api);
+        $api->allTickets(1, 100);
+    }
+
+    public function zendesk_tickets(Request $request, $api_id)
+    {
+        $api = \App\Services\ImportZendeskService::getApi((int)$api_id);
+        
+        if ($api->allTickets($request->get('page', 1), $request->get('per_page', 100))) {
+            ddd($api->tickets());
+        }
+        
+        ddd($api->errors_api);
+    }
+
+    public function zendesk_tickets_comments(Request $request, $api_id, $tickets_id)
+    {
+        $api = \App\Services\ImportZendeskService::getApi((int)$api_id);
+        
+        if ($api->allTicketComments($tickets_id, $request->get('page', 1), $request->get('per_page', 100))) {
+            ddd([
+                'comments' => $api->comments(),
+                'users' => $api->users()
+            ]);
+        }
+        
+        ddd($api->errors_api);
+    }
+    
 }

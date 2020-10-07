@@ -2,12 +2,13 @@
 
 namespace App\DataTables;
 
-use App\Author;
+use App\Models\Author;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
+use Illuminate\Http\Request;
 
 class AuthorsDataTable extends DataTable
 {
@@ -21,7 +22,10 @@ class AuthorsDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('action', 'authors.action');
+            ->addColumn('action', 'components.author.crud_buttons')
+            ->editColumn('service_id', function (Author $model) {
+                return $model->service->name;
+            });
     }
 
     /**
@@ -30,9 +34,12 @@ class AuthorsDataTable extends DataTable
      * @param \App\Author $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(Author $model)
+    public function query(Request $request, Author $model)
     {
-        return $model->newQuery();
+        return $model->newQuery()
+                    ->when($request->has('show_tickets'), function ($query) {
+                        $query->where('show_tickets', false);
+                    });
     }
 
     /**
@@ -43,18 +50,17 @@ class AuthorsDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('authors-table')
+                    ->setTableId('my-table')
+                    ->addTableClass('table table-bordered table-striped table-vcenter')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
-                    ->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->buttons(
-                        Button::make('create'),
-                        Button::make('export'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    );
+                    ->dom('lfrtip')
+                    ->orderBy(0)
+                    ->lengthMenu([[ 10, 25, 50, - 1], [ '10 rows', '25 rows', '50 rows', 'Show all']])
+                    ->parameters([
+                        'drawCallback' => 'function(e) { drawTableCallback(e) }',
+                        'initComplete' => 'function() { myTable = window.LaravelDataTables["my-table"]; }',
+                    ]);
     }
 
     /**
@@ -65,15 +71,16 @@ class AuthorsDataTable extends DataTable
     protected function getColumns()
     {
         return [
+            Column::make('api_id'),
+            Column::make('service_id'),
+            Column::make('name'),
+            Column::make('email'),
             Column::computed('action')
                   ->exportable(false)
                   ->printable(false)
                   ->width(60)
                   ->addClass('text-center'),
-            Column::make('id'),
-            Column::make('add your columns'),
-            Column::make('created_at'),
-            Column::make('updated_at'),
+            
         ];
     }
 

@@ -78,15 +78,18 @@
                     @endif
                 </div>
                 <div class="p-10">
-                    <a href="{{ route('home') }}" class="btn btn-alt-danger mr-5 mb-5">
+                    {{-- <a href="{{ route('home') }}" class="btn btn-alt-danger mr-5 mb-5">
                         <i class="fa fa-download mr-5"></i>Import
-                    </a>
+                    </a> --}}
                     <a href="{{ route('home') }}" class="btn btn-alt-warning mr-5 mb-5">
                         <i class="fa fa-upload mr-5"></i>Export
                     </a>
+                    @if (!empty($showHideListLink))
+                        @include('components.tickets.hide-list-link')
+                    @endif
                 </div>
             </div>
-
+            
             @if (!empty($showFiltersForm))
                 @include('components.tickets.filters-form')
             @endif
@@ -146,8 +149,9 @@
             })
 
             $('#modal_show_item').on('show.bs.modal', function (event) {
-                var button = $(event.relatedTarget) 
-                $(this).find("#show_content").load('{{ route($jsroute) }}/'+ button.data('id'));
+                var button = $(event.relatedTarget)  
+                $(this).find("#show_content").html(showLoadModal())
+                $(this).find("#show_content").load('{{ route($jsroute) }}/'+ button.data('id'))
             })
             
             $('body').on('submit', '#ajaxUpdateForm', function (event) {
@@ -223,66 +227,6 @@
                 })
             })
             
-            /* $('body').on('click', '.updatednsItem', function () {
-                var model_id = $(this).data("id");
-                var confirmtext = $(this).data("confirm");
-                // confirm(confirmtext);
-                $.ajax({
-                    type: "post",
-                    url: '{{ route($jsroute) }}/'+ model_id + '/updatedns',
-                    dataType: 'json',
-                    success: function (json) {
-                        showNotify('success', json.success)
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        showNotify('danger', 'add to update dns failed! :-(')
-                    },
-                    complete: function() {
-                        myTable.draw()
-                    }
-                })
-            }) */
-
-            /* $('body').on('click', '.importItemDns', function () {
-                var model_id = $(this).data("id");
-                var confirmtext = $(this).data("confirm");
-                // confirm(confirmtext);
-                $.ajax({
-                    type: "post",
-                    url: '{{ route($jsroute) }}/'+ model_id + '/importdns',
-                    dataType: 'json',
-                    success: function (json) {
-                        showNotify('success', json.success)
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        showNotify('danger', 'add to update dns failed! :-(')
-                    },
-                    complete: function() {
-                        myTable.draw()
-                    }
-                })
-            } */)
-
-            /* $('body').on('click', '.importItemSubdomains', function () {
-                var model_id = $(this).data("id");
-                var confirmtext = $(this).data("confirm");
-                // confirm(confirmtext);
-                $.ajax({
-                    type: "post",
-                    url: '{{ route($jsroute) }}/'+ model_id + '/importsubdomains',
-                    dataType: 'json',
-                    success: function (json) {
-                        showNotify('success', json.success)
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        showNotify('danger', 'add to update dns failed! :-(')
-                    },
-                    complete: function() {
-                        myTable.draw()
-                    }
-                })
-            }) */
-            
             function showNotify(type, message) {
                 Codebase.helpers('notify', { align: 'right', from: 'top', type: type, icon: 'fa fa-times', message: message })
             }
@@ -291,6 +235,10 @@
                 return ` @include('components.editDefaultForm') `;
             }
 
+            function showLoadModal() {
+                return ` @include('components.show-load-modal') `;
+            }
+            
             $('body').on('keyup click', '#filter-author', function () {
                 filterColumn (1, $(this).val())
             })
@@ -300,6 +248,10 @@
             $('body').on('keyup click', '#filter-ip-address', function () {
                 filterColumn (5, $(this).val())
             })
+            $('body').on('keyup click', '#filter-in_scheme', function () {
+                filterColumn (6, $(this).prop('checked')? 'on': 'off')
+            })
+            
         })
     </script>
 @endpush

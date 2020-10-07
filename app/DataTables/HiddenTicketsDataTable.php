@@ -11,7 +11,7 @@ use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 use Illuminate\Support\Str;
 
-class TicketsDataTable extends DataTable
+class HiddenTicketsDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -58,13 +58,12 @@ class TicketsDataTable extends DataTable
                     return '';
                 },
             ])
-            ->addColumn('action', 'components.tickets.crud_buttons')
+            ->addColumn('action', 'components.hidden_tickets.crud_buttons')
             ->editColumn('created_at', function (Ticket $model) {
-                // return (new Carbon($model->data['created_at']))->format('Y-m-d H:m');
                 return $model->created_at->format('Y-m-d H:m');
             })
             ->editColumn('title', function (Ticket $model) {
-                return '<a href="' . route('tickets.full-show', $model->id) . '" target="_blank">' . Str::limit($model->data['subject'], 20, ' (...)') . '</a>';
+                return '<a href="' . route('hidden_tickets.full-show', $model->id) . '" target="_blank">' . Str::limit($model->data['subject'], 20, ' (...)') . '</a>';
             })
             ->editColumn('author', function (Ticket $model) {
                 return Str::limit($model->author->name, 20, '...');
@@ -81,10 +80,7 @@ class TicketsDataTable extends DataTable
     public function query(Ticket $model)
     {
         return $model->newQuery()
-                    ->where('show', true)
-                    ->whereHas('author', function ($query) {
-                        $query->where('show_tickets', true);
-                    })
+                    ->where('show', false)
                     ->withCount('domains')
                     ->withCount('ip_addresses');
     }
@@ -101,25 +97,12 @@ class TicketsDataTable extends DataTable
                     ->addTableClass('table table-bordered table-striped table-vcenter')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
-                    ->dom('rtip')
+                    ->dom('lfrtip')
                     ->orderBy(3)
                     ->lengthMenu([[ 100, 250, 500], [ '100 rows', '250 rows', '500 rows']])
                     ->parameters([
                         'drawCallback' => 'function(e) { drawTableCallback(e) }',
                         'initComplete' => 'function() { myTable = window.LaravelDataTables["my-table"]; }',
-                        /* 'initComplete' => 'function(settings, json) { 
-                            myTable = window.LaravelDataTables["my-table"]; 
-                            console.log(settings, json);
-                            this.api().columns().every(function () {
-                                var column = this;
-                                if(settings.aoColumns[column[0][0]].searchable) {
-                                    var input = document.createElement("input");
-                                    $(input).appendTo( $(column.footer()).empty() ).on("change", function () {
-                                        column.search($(this).val(), false, false, true).draw();
-                                    });
-                                }
-                            });
-                        }', */
                     ]);
     }
 

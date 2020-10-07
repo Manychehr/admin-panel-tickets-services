@@ -3,24 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\CommentsDataTable;
-use App\DataTables\TicketsDataTable;
+use App\DataTables\HiddenTicketsDataTable;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 
-class TicketsController extends AuthBaseController
+class HiddenTicketsController extends AuthBaseController
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(TicketsDataTable $dataTable)
+    public function index(HiddenTicketsDataTable $dataTable)
     {
-        $block_title = 'Tickets List';
-        $jsroute = 'tickets.index';
+        $block_title = 'Hidden Tickets List';
+        $jsroute = 'hidden_tickets.index';
         $columnsShowMenu = []; // $this->getColumnsShowMenu();
-        $showHideListLink = true;
-        $showFiltersForm = true;
+        $showHideListLink = false;
+        $showFiltersForm = false;
         return $dataTable->render('DataTable', compact('block_title', 'jsroute', 'columnsShowMenu', 'showFiltersForm', 'showHideListLink'));
     }
 
@@ -104,18 +104,9 @@ class TicketsController extends AuthBaseController
 
     public function hide_ticket(Ticket $ticket)
     {
-        $ticket->show = false;
+        $ticket->show = true;
         $ticket->save();
         return response()->json(['success' => 'Hide ticket successfully']);
     }
 
-    public function hide_user_tickets(Ticket $ticket)
-    {
-        if (!empty($author = $ticket->author)) {
-            $author->show_tickets = false;
-            $author->save();
-        }
-
-        return response()->json(['success' => 'Hide user tickets successfully']);
-    }
 }

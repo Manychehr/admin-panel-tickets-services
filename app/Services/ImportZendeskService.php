@@ -33,7 +33,7 @@ class ImportZendeskService extends ZendeskService
 
     public function allTicketComments($ticket_id, $page=1, $per_page=100)
     {
-        $this->api_result = $this->getTicketComments($ticket_id, $page, $per_page=100);
+        $this->api_result = $this->getTicketComments($ticket_id, $page, $per_page);
         
         return !empty($this->api_result) && !empty($this->api_result->comments);
     }

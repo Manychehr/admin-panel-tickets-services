@@ -127,6 +127,12 @@
                 <!-- END Client Info -->
             </div>
             <!-- END ticket Info -->
+            <div class="row my-20">
+                <div class="col-12">
+                    <p class="h5">Notes: </p>
+                    <div>{{ $ticket->getNotes() }}</div>
+                </div>
+            </div>
         </div>
 
     </div>
