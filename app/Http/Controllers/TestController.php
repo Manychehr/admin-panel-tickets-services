@@ -48,7 +48,26 @@ class TestController extends Controller
         if ($api->allTicketComments($tickets_id, $request->get('page', 1), $request->get('per_page', 100))) {
             ddd([
                 'comments' => $api->comments(),
-                'users' => $api->users()
+                'users' => $api->users(),
+                'nextPage' => $api->nextPage(),
+                'raw' => $api->api_result
+            ]);
+        }
+        
+        ddd($api->errors_api);
+    }
+
+    public function zendesk_update_tickets(Request $request)
+    {
+        $api = \App\Services\UpdateZendeskService::getApiUpdateToDay($request->get('day', '-1'));
+        if (empty($api)) {
+            ddd('empty api');
+        }
+        if ($api->allTickets($request->get('page', 1), $request->get('per_page', 100))) {
+            ddd([
+                'tickets' => $api->tickets(),
+                'nextPage' => $api->nextPage(),
+                'raw' => $api->api_result
             ]);
         }
         

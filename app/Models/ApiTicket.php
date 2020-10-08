@@ -29,6 +29,7 @@ class ApiTicket extends Model
      * @var array
      */
     protected $dates = [
-        'import_at'
+        'import_at',
+        'update_at'
     ];
 }

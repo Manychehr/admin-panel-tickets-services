@@ -54,7 +54,7 @@ class ImportZendeskTicketsJob implements ShouldQueue
 
         foreach ($importZendeskService->tickets() as $import_ticket) {
             $ticket = TicketsServices::updateOrCreate($import_ticket, $this->service_id);
-            dispatch(new ImportZendeskTicketCommentsJob($ticket, 1, 1));
+            dispatch(new ImportZendeskTicketCommentsJob($ticket, 1, 500));
         }
     }
 }

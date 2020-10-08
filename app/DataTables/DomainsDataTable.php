@@ -2,7 +2,7 @@
 
 namespace App\DataTables;
 
-use App\Domain;
+use App\Models\Domain;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
@@ -21,7 +21,15 @@ class DomainsDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('action', 'domains.action');
+            ->rawColumns(['host'])
+            ->editColumn('created_at', function (Domain $model) {
+                return $model->created_at->format('Y-m-d H:m');
+            })
+            ->editColumn('host', function (Domain $model) {
+                return '<button type="button" class="btn btn-secondary showItem" data-toggle="modal" data-target="#modal_show_item" data-id="'
+                . $model->id . '" style="width: 100%">'
+                . $model->host .'</button>';
+            });
     }
 
     /**
@@ -43,18 +51,17 @@ class DomainsDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('domains-table')
+                    ->setTableId('my-table')
+                    ->addTableClass('table table-bordered table-striped table-vcenter')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
-                    ->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->buttons(
-                        Button::make('create'),
-                        Button::make('export'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    );
+                    ->dom('lfrtip')
+                    ->orderBy(2)
+                    ->lengthMenu([[ 100, 250, 500], [ '100 rows', '250 rows', '500 rows']])
+                    ->parameters([
+                        'drawCallback' => 'function(e) { drawTableCallback(e) }',
+                        'initComplete' => 'function() { myTable = window.LaravelDataTables["my-table"]; }',
+                    ]);
     }
 
     /**
@@ -65,15 +72,9 @@ class DomainsDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            Column::computed('action')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
-            Column::make('id'),
-            Column::make('add your columns'),
+            Column::make('host'),
+            Column::make('rank'),
             Column::make('created_at'),
-            Column::make('updated_at'),
         ];
     }
 

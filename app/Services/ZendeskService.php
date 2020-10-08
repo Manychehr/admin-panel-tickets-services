@@ -42,11 +42,11 @@ class ZendeskService {
         $this->apiClient->setAuth('basic', ['username' => $this->username, 'token' => $this->token]);
     }
 
-    public static function getApi($service_id=null, $import_at=null)
+    public static function getApi($service_id=null, $import_at=null, $term='>')
     {
         $apiTicket = ApiTicket::where('service', 'zendesk')
-                            ->when(empty($service_id), function ($query) use ($import_at) {
-                                return $query->where('import_at', $import_at);
+                            ->when(empty($service_id), function ($query) use ($import_at, $term) {
+                                return $query->where('import_at', $term, $import_at);
                             }, function ($query) use ($service_id) {
                                 return $query->where('id', $service_id);
                             })
@@ -85,10 +85,10 @@ class ZendeskService {
         return $tickets;
     }
 
-    public function importIncrementalTickets($start_time, $page, $per_page=1)
+    public function importIncrementalTickets($start_time, $page, $per_page=100)
     {
         return $this->apiClient->incremental()->tickets([
-            'start_time' => $start_time, // Carbon::today()->modify('-1 day')->timestamp, 
+            'start_time' => $start_time, // , 
             'per_page' => $per_page, 
             'page' => $page, 
             'sort_order' => 'asc'

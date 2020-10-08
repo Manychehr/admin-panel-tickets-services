@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\DomainsDataTable;
 use App\Models\Domain;
 use Illuminate\Http\Request;
 
@@ -12,9 +13,14 @@ class DomainController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(DomainsDataTable $dataTable)
     {
-        //
+        $block_title = 'Domains List';
+        $jsroute = 'domains.index';
+        $columnsShowMenu = [];
+        $showHideListLink = false;
+        $showFiltersForm = false;
+        return $dataTable->render('DataTable', compact('block_title', 'jsroute', 'columnsShowMenu', 'showFiltersForm', 'showHideListLink'));
     }
 
     /**
@@ -46,7 +52,7 @@ class DomainController extends Controller
      */
     public function show(Domain $domain)
     {
-        //
+        return view('components.domains.show', compact('domain'));
     }
 
     /**

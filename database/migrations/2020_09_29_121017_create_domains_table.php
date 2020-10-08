@@ -18,6 +18,7 @@ class CreateDomainsTable extends Migration
             $table->string('host');
             $table->integer('rank')->nullable();
             $table->unsignedBigInteger('ticket_id');
+            $table->timestamps();
         });
     }
 

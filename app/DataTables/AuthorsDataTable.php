@@ -56,7 +56,7 @@ class AuthorsDataTable extends DataTable
                     ->minifiedAjax()
                     ->dom('lfrtip')
                     ->orderBy(0)
-                    ->lengthMenu([[ 10, 25, 50, - 1], [ '10 rows', '25 rows', '50 rows', 'Show all']])
+                    ->lengthMenu([[ 100, 250, 500], [ '100 rows', '250 rows', '500 rows']])
                     ->parameters([
                         'drawCallback' => 'function(e) { drawTableCallback(e) }',
                         'initComplete' => 'function() { myTable = window.LaravelDataTables["my-table"]; }',

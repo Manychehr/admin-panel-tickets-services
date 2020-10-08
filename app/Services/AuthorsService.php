@@ -10,7 +10,7 @@ class AuthorsService
     {
         return Author::updateOrCreate(
             ['api_id' => $author->id, 'service_id' => $service_id],
-            ['name' => $author->name, 'data' => (array)$author]
+            ['name' => $author->name, 'email' => $author->email, 'data' => (array)$author]
         );
     }
 

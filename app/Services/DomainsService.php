@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Domain;
+use Carbon\Carbon;
 
 class DomainsService
 {
@@ -10,7 +11,7 @@ class DomainsService
     {
         return Domain::updateOrCreate(
             ['host' => $host, 'ticket_id' => $ticket_id],
-            ['rank' => $rank]
+            ['rank' => $rank, 'created_at' => new Carbon()]
         );
     }
 

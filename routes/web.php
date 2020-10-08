@@ -36,12 +36,17 @@ Route::resource('/authors', 'App\Http\Controllers\AuthorController');
 Route::post('/authors/{author}/hide-ticket', 'App\Http\Controllers\AuthorController@hide_ticket')->name('authors.hide-ticket');
 Route::post('/authors/{author}/show-ticket', 'App\Http\Controllers\AuthorController@show_ticket')->name('authors.show-ticket');
 
+Route::resource('/domains', 'App\Http\Controllers\DomainController');
+
 Route::resource('/api_tickets', 'App\Http\Controllers\ApiTicketController');
 Route::post('/api_tickets/{api_ticket}/send-import', 'App\Http\Controllers\ApiTicketController@send_import');
 
 Route::get('/test', 'App\Http\Controllers\TestController@index')->name('test.index');
 Route::post('/test', 'App\Http\Controllers\TestController@test')->name('test.test');
 
+Route::get('/zendesk-api/update/tickets', 'App\Http\Controllers\TestController@zendesk_update_tickets')->name('test.zendesk.update.tickets');
+
 Route::get('/test-api/{api_id}', 'App\Http\Controllers\TestController@zendesk')->name('test.zendesk.api');
 Route::get('/zendesk-api/{api_id}/tickets', 'App\Http\Controllers\TestController@zendesk_tickets')->name('test.zendesk.api.tickets');
 Route::get('/zendesk-api/{api_id}/tickets/{tickets_id}/comments', 'App\Http\Controllers\TestController@zendesk_tickets_comments')->name('test.zendesk.api.tickets.comments');
+

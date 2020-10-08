@@ -8,13 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Domain extends Model
 {
     use HasFactory;
-
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
     
     /**
      * Атрибуты, для которых запрещено массовое назначение.
@@ -22,4 +15,21 @@ class Domain extends Model
      * @var array
      */
     protected $guarded = [];
+
+    /**
+     * Get the service that owns the Author.
+     */
+    public function ticket()
+    {
+        return $this->belongsTo(Ticket::class, 'ticket_id', 'api_id');
+    }
+
+    public function getHostAllTickets($tickets=[])
+    {
+        $domains = Domain::where('host', $this->host)->get();
+        foreach ($domains as $domain) {
+            $tickets[] = $domain->ticket;
+        }
+        return $tickets;
+    }
 }
