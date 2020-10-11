@@ -106,7 +106,7 @@ class ApiTicketController extends Controller
         if ($apiTicket->service === 'zendesk') {
             dispatch(new ImportZendeskTicketsJob($apiTicket->id, 1, 100));
         } else {
-            dispatch(new ImportKayakoTicketsJob($apiTicket->id, 1, 100));
+            dispatch(new ImportKayakoTicketsJob($apiTicket->id, 2, 100));
         }
         
         return response()->json(['success' => 'Api Details send-import successfully']);

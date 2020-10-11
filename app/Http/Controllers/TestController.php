@@ -122,7 +122,8 @@ class TestController extends AuthBaseController
 
         ddd([
             //$ticket->first(),
-            // $kayako->getTicketComments(337368),
+            $kayako->getTicketComments(337368),
+            $kayako->errors_api
             // 
             //\App\KayakoApi\kyTicket::getAll($general_department, [], [], [], 20, 300),
             //$general_department 

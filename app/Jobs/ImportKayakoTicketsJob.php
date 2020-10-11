@@ -62,14 +62,17 @@ class ImportKayakoTicketsJob implements ShouldQueue
         }
 
         if (!empty($page_params = $ImportKayakoService->nextPage())) {
-            dispatch(new ImportZendeskTicketsJob($this->service_id, $page_params['page'], $this->per_page));
+            dispatch(new ImportZendeskTicketsJob($this->service_id, $this->page++, $this->per_page));
         }
 
         foreach ($ImportKayakoService->tickets() as $kyTicket) {
+
+            $user = $ImportKayakoService->ticketUser($kyTicket, $this->service_id);
+
             $ticket = TicketsServices::updateOrCreateNew(
                 $kyTicket->getId(), 
                 $this->service_id, 
-                $kyTicket->getUserId(),
+                $user->api_id,
                 $ImportKayakoService->adapter_ticket($kyTicket),
                 $kyTicket->getCreationTime()
             );
@@ -77,7 +80,7 @@ class ImportKayakoTicketsJob implements ShouldQueue
             /* if (!empty($kyTicket->getUserId())) {
                 $ImportKayakoService->user($kyTicket->getUserId(), $this->service_id);
             } */
-            $ImportKayakoService->ticketUser($kyTicket, $this->service_id);
+            
 
             dispatch(new ImportKayakoTicketCommentsJob($ticket));
         }

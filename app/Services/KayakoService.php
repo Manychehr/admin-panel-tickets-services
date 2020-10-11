@@ -143,7 +143,7 @@ class KayakoService {
         if (empty($query_params['page'])) {
             return false;
         }
-        $query_params['page']++;
+        $query_params['page'] = (int)$query_params['page']+1;
         
         return $query_params;
     }

@@ -72,14 +72,17 @@ class ImportKayakoTicketCommentsJob implements ShouldQueue
          */
         foreach ($ImportKayakoService->comments() as $kyTicketPost) {
 
+            $user = $ImportKayakoService->commentUser($kyTicketPost, $this->ticket->service_id);
+
             $data = $ImportKayakoService->adapter_comments($kyTicketPost, $attachments);
             CommentsService::updateOrCreateNew(
                 $kyTicketPost->getId(), 
                 $this->ticket->api_id, 
-                $kyTicketPost->getUserId(),
+                $user->api_id, // $kyTicketPost->getUserId(),
                 $this->ticket->service_id,
                 $data
             );
+
             DomainsService::parsDomains($data['html_body'], $this->ticket->api_id);
             IpAddressService::parsIpAddress($data['html_body'], $this->ticket->api_id);
 
@@ -90,7 +93,6 @@ class ImportKayakoTicketCommentsJob implements ShouldQueue
             /* if (!empty($kyTicketPost->getUserId())) {
                 $ImportKayakoService->user($kyTicketPost->getUserId(), $this->ticket->service_id);
             } */
-            $ImportKayakoService->commentUser($kyTicketPost, $this->ticket->service_id);
         }
 
         $this->ticket->in_scheme = $prohibited_schemes;

@@ -18,7 +18,7 @@ class CreateCommentsTable extends Migration
             $table->unsignedBigInteger('api_id');
             $table->unsignedBigInteger('ticket_id');
             $table->unsignedBigInteger('service_id');
-            $table->unsignedBigInteger('author_id');
+            $table->unsignedBigInteger('author_id')->nullable();
             $table->json('data')->nullable();
             $table->timestamps();
         });
