@@ -2,23 +2,24 @@
 
 namespace App\Console\Commands;
 
+use App\Services\DomainsService;
 use Illuminate\Console\Command;
 
-class ImportZendeskTickets extends Command
+class UpdateDomains extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'update:domains';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Command Update Domains';
 
     /**
      * Create a new command instance.
@@ -37,6 +38,7 @@ class ImportZendeskTickets extends Command
      */
     public function handle()
     {
+        DomainsService::update_day(-30, 5);
         return 0;
     }
 }

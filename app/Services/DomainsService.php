@@ -34,4 +34,33 @@ class DomainsService
         
         return true;
     }
+
+    public static function update_day($days, $limit)
+    {
+        $domains = self::get_domains($days, $limit);
+        
+        if (empty($domains)) {
+            return false;
+        }
+
+        $alexaRanking = new AlexaRanking;
+        foreach ($domains as $domain) {
+            Domain::where('host', $domain->host)
+                    ->update([
+                        'rank' => $alexaRanking->getRank($domain->host),
+                        'updated_at' => new Carbon()
+                    ]);
+        }
+
+        return $domains;
+    }
+
+    public static function get_domains($days, $limit)
+    {
+        return Domain::where('updated_at','<', \Carbon\Carbon::now()->addDays($days))
+                    ->orderBy('updated_at','desc')
+                    ->groupBy(['host'])
+                    ->limit($limit)
+                    ->get();
+    }
 }

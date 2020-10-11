@@ -81,7 +81,7 @@
                     {{-- <a href="{{ route('home') }}" class="btn btn-alt-danger mr-5 mb-5">
                         <i class="fa fa-download mr-5"></i>Import
                     </a> --}}
-                    <a href="{{ route('home') }}" class="btn btn-alt-warning mr-5 mb-5">
+                    <a href="{{ route('export.index') }}" class="btn btn-alt-warning mr-5 mb-5">
                         <i class="fa fa-upload mr-5"></i>Export
                     </a>
                     @if (!empty($showHideListLink))

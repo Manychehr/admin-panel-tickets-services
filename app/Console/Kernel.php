@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        Commands\UpdateDomains::class
     ];
 
     /**
@@ -24,7 +24,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('update:domains')->withoutOverlapping();
+        
+        /* $schedule->command('queue:restart')
+            ->everyFiveMinutes(); */
+
+        /* if (stripos((string) shell_exec('ps xf | grep \'[q]ueue:work\''), 'artisan queue:work') === false) {
+            $schedule->command('queue:work --queue=default --sleep=3')->everyMinute()->appendOutputTo(storage_path() . '/logs/scheduler.log');
+        } */
     }
 
     /**

@@ -2,7 +2,9 @@
     <div class="block-content block-header-default">
         <h4 class="block-title">Comments Body</h4>
         <hr>
-        {!! $model->data['html_body'] !!}
+        <div style="white-space: break-spaces;" class="big-table">
+            {!! $model->data['html_body'] !!}
+        </div>
         <hr>
         <h4 class="block-title">Attachments</h4>
         <hr>
@@ -20,7 +22,7 @@
                 <tr>
                     <th class="text-center" scope="row">{{ $item['id'] }}</th>
                     <td>
-                        <a href="{{ $item['content_url'] }}" target="_blank" rel="noopener noreferrer">{{ $item['file_name'] }}</a>
+                        <a href="{{ $item['content_url']?? '' }}" target="_blank" rel="noopener noreferrer">{{ $item['file_name'] }}</a>
                     </td>
                     <td class="d-none d-sm-table-cell">
                         {{ $item['content_type'] }}

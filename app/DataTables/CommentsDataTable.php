@@ -34,7 +34,13 @@ class CommentsDataTable extends DataTable
         return datatables()
             ->eloquent($query)
             ->editColumn('author', function (Comment $model) {
-                return Str::limit($model->author->name, 20, '...');
+                if ($model->hasAuthor()) {
+                    return Str::limit($model->author->name, 20, '...');
+                }
+                if (!empty($model->data['fullname'])) {
+                    return Str::limit($model->data['fullname'], 20, '...');
+                }
+                return 'anonim ';
             })
             ->editColumn('created', function (Comment $model) {
                 return (new Carbon($model->data['created_at']))->format('Y-m-d H:m');

@@ -22,4 +22,12 @@ class CommentsService
     {
         return Comment::where('api_id', $api_id)->where('service_id', $service_id)->first();
     }
+
+    public static function updateOrCreateNew($api_id, $ticket_id, $author_id, $service_id, $data)
+    {
+        return Comment::updateOrCreate(
+            ['api_id' => $api_id, 'ticket_id' => $ticket_id, 'author_id' => $author_id, 'service_id' => $service_id],
+            ['data' => (array)$data]
+        );
+    }
 }

@@ -71,7 +71,7 @@ class ImportZendeskTicketCommentsJob implements ShouldQueue
         }
 
         if (!empty($page_params = $importZendeskService->nextPage())) {
-            dispatch(new ImportZendeskEventsJob($this->service_id, $page_params['page'], $this->per_page));
+            dispatch(new ImportZendeskTicketCommentsJob($this->service_id, $page_params['page'], $this->per_page));
         }
 
         $prohibited_schemes = false;

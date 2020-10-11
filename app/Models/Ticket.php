@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -86,10 +87,39 @@ class Ticket extends Model
 
     public function getNotes()
     {
-        if (!empty($this->data['custom_fields']) && !empty($this->data['custom_fields']['notes'])) {
-            return (string)$this->data['custom_fields']['notes'];
+        if ($this->service === 'zendesk') {
+            return $this->zendeskNotes();
         }
-        return 'no notes';
+
+        return $this->kayakoNotes();
+    }
+
+    public function zendeskNotes()
+    {
+        if (!empty($this->data['custom_fields']) && !empty($this->data['custom_fields']['notes'])) {
+            return $this->data['custom_fields']['notes'];
+        }
+        return [];
+    }
+
+    public function kayakoNotes($notes = [])
+    {
+        if (!empty($this->data['note'])) {
+            foreach ($this->data['note'] as $note) {
+                if (!empty($note['_attributes']['creationdate'])) {
+                    $date = (int)$note['_attributes']['creationdate'];
+                } else {
+                    $date = (int)$note['_attributes']['billdate'];
+                }
+                
+                $notes[] = [
+                    'user' => $note['_attributes']['creatorstaffname'],
+                    'date' => (new Carbon((int)$date?? null))->format('Y-m-d H:m'),
+                    'contents' => $note['_contents'],    
+                ];
+            }
+        }
+        return $notes;
     }
 
     public static function hasHide()

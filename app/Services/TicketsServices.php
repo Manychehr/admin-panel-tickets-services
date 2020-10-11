@@ -24,6 +24,18 @@ class TicketsServices
         );
     }
 
+    public static function updateOrCreateNew($id, $service_id, $author_id, $data, $created)
+    {
+        return Ticket::updateOrCreate(
+            ['api_id' => $id, 'service_id' => $service_id],
+            [
+                'author_id' => $author_id, 
+                'data' => (array)$data, 
+                'created_at' => new Carbon($created)
+            ]
+        );
+    }
+
     public static function inScheme(Ticket $ticket, bool $in_scheme)
     {
         $ticket->in_scheme = $in_scheme;

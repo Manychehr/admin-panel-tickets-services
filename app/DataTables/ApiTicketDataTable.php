@@ -22,8 +22,8 @@ class ApiTicketDataTable extends DataTable
         return datatables()
             ->eloquent($query)
             ->addColumn('action', 'components.crud_buttons')
-            ->editColumn('subdomain', 'components.api_details.import_button')
-            ->rawColumns(['action', 'subdomain']);
+            ->editColumn('import', 'components.api_details.import_button')
+            ->rawColumns(['action', 'import']);
             
     }
 
@@ -72,6 +72,11 @@ class ApiTicketDataTable extends DataTable
             Column::make('name'),
             Column::make('service'),
             Column::make('subdomain'),
+            Column::computed('import', 'import')
+                    ->exportable(false)
+                    ->printable(false)
+                    ->width(60)
+                    ->addClass('text-center'),
             Column::computed('action', 'ACTIONS')
                   ->exportable(false)
                   ->printable(false)

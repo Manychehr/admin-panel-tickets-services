@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use Carbon\Carbon;
-
 class ImportZendeskService extends ZendeskService
 {
 

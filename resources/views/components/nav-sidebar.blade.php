@@ -44,24 +44,18 @@
                         <span class="sidebar-mini-hide">Home</span>
                     </a>
                 </li>
-                {{-- <li>
-                    <a class="@if (Route::currentRouteName() === 'import.index') active @endif" href="{{ route('import.index') }}">
-                        <i class="fa fa-download"></i>
-                        <span class="sidebar-mini-hide">Import</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="@if (Route::currentRouteName() === 'export.index') active @endif" href="{{ route('export.index') }}">
-                        <i class="fa fa-upload"></i>
-                        <span class="sidebar-mini-hide">Export</span>
-                    </a>
-                </li>--}}
                 <li>
                     <a class="@if (Route::currentRouteName() === 'domains.index') active @endif" href="{{ route('domains.index') }}">
                         <i class="fa fa-internet-explorer"></i>
                         <span class="sidebar-mini-hide">Hosts</span>
                     </a>
                 </li> 
+                <li>
+                    <a class="@if (Route::currentRouteName() === 'export.index') active @endif" href="{{ route('export.index') }}">
+                        <i class="fa fa-upload"></i>
+                        <span class="sidebar-mini-hide">Export</span>
+                    </a>
+                </li>
                 <li>
                     <a class="@if (Route::currentRouteName() === 'api_tickets.index') active @endif" href="{{ route('api_tickets.index') }}">
                         <i class="fa fa-gears"></i>

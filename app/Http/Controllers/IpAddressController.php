@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\IpAddress;
 use Illuminate\Http\Request;
 
-class IpAddressController extends Controller
+class IpAddressController extends AuthBaseController
 {
     /**
      * Display a listing of the resource.

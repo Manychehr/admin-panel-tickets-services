@@ -6,7 +6,7 @@ use App\DataTables\DomainsDataTable;
 use App\Models\Domain;
 use Illuminate\Http\Request;
 
-class DomainController extends Controller
+class DomainController extends AuthBaseController
 {
     /**
      * Display a listing of the resource.

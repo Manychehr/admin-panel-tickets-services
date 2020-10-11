@@ -90,6 +90,18 @@
             padding: 10px;
             background-color: #e3f4fc;
         }
+        .big-table {
+            overflow: auto;
+            position: relative;
+        }
+        .big-table table {
+            display: inline-block;
+            vertical-align: top;
+            max-width: 100%;
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
     </style>
 @endpush
 @section('content')
@@ -130,7 +142,26 @@
             <div class="row my-20">
                 <div class="col-12">
                     <p class="h5">Notes: </p>
-                    <div>{{ $ticket->getNotes() }}</div>
+                    <table class="table table-striped table-vcenter">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>User</th>
+                                <th>Contents</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($ticket->getNotes() as $item)
+                            <tr>
+                                <th scope="row">{{ $item['date'] }}</th>
+                                <td>{{ $item['user'] }}</td>
+                                <td style="white-space: break-spaces;">{{ $item['contents'] }}</td>
+                            </tr>
+                            @empty
+                                no notes
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -156,7 +187,7 @@
                     <tr>
                         <th class="text-center" scope="row">{{ $item['id'] }}</th>
                         <td>
-                            <a href="{{ $item['content_url'] }}" target="_blank" rel="noopener noreferrer">{{ $item['file_name'] }}</a>
+                            <a href="{{ $item['content_url']?? '' }}" target="_blank" rel="noopener noreferrer">{{ $item['file_name'] }}</a>
                         </td>
                         <td class="d-none d-sm-table-cell">
                             {{ $item['content_type'] }}
@@ -212,7 +243,7 @@
                                 </a>
                             </li>
                             @empty
-                            <li>no domains detected</li>
+                            <li>no ip_addresses detected</li>
                             @endforelse
                             
                         </ul>

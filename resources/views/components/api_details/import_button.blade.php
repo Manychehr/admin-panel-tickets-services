@@ -1,5 +1,4 @@
 
-        {{ $model->subdomain }}
         @if (empty($model->import_at))
         <button 
             type="button" 
@@ -8,6 +7,6 @@
             data-metod="send-import"
             data-confirm="Are You sure want to Import Tickets !"
         >
-            <i class="fa fa-database"></i> Import
+            <i class="fa fa-database"></i> All
         </button>
         @endif

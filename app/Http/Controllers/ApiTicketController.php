@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\ApiTicketDataTable;
 use App\Http\Requests\StoreApiTicketRequest;
+use App\Jobs\ImportKayakoTicketsJob;
 use App\Jobs\ImportZendeskTicketsJob;
 use App\Models\ApiTicket;
 use Illuminate\Http\Request;
@@ -19,8 +20,9 @@ class ApiTicketController extends Controller
     {
         $block_title = 'Api Details List';
         $jsroute = 'api_tickets.index';
+        $ShowButtonCreate = true;
         $columnsShowMenu = []; // $this->getColumnsShowMenu();
-        return $dataTable->render('DataTable', compact('block_title', 'jsroute', 'columnsShowMenu'));
+        return $dataTable->render('DataTable', compact('block_title', 'jsroute', 'columnsShowMenu', 'ShowButtonCreate'));
     }
 
     /**
@@ -101,7 +103,12 @@ class ApiTicketController extends Controller
 
     public function send_import(ApiTicket $apiTicket)
     {
-        dispatch(new ImportZendeskTicketsJob($apiTicket->id, 1, 1));
+        if ($apiTicket->service === 'zendesk') {
+            dispatch(new ImportZendeskTicketsJob($apiTicket->id, 1, 100));
+        } else {
+            dispatch(new ImportKayakoTicketsJob($apiTicket->id, 1, 100));
+        }
+        
         return response()->json(['success' => 'Api Details send-import successfully']);
     }
 }

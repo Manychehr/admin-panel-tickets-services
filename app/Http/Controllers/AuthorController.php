@@ -6,7 +6,7 @@ use App\DataTables\AuthorsDataTable;
 use App\Models\Author;
 use Illuminate\Http\Request;
 
-class AuthorController extends Controller
+class AuthorController extends AuthBaseController
 {
     /**
      * Display a listing of the resource.

@@ -44,9 +44,18 @@ Route::post('/api_tickets/{api_ticket}/send-import', 'App\Http\Controllers\ApiTi
 Route::get('/test', 'App\Http\Controllers\TestController@index')->name('test.index');
 Route::post('/test', 'App\Http\Controllers\TestController@test')->name('test.test');
 
+Route::get('/domains/update/ranks', 'App\Http\Controllers\TestController@domains_update_ranks')->name('test.domains.update.ranks');
 Route::get('/zendesk-api/update/tickets', 'App\Http\Controllers\TestController@zendesk_update_tickets')->name('test.zendesk.update.tickets');
 
+Route::get('/kayako-api/{api_id}', 'App\Http\Controllers\TestController@kayako')->name('test.kayako.api');
 Route::get('/test-api/{api_id}', 'App\Http\Controllers\TestController@zendesk')->name('test.zendesk.api');
 Route::get('/zendesk-api/{api_id}/tickets', 'App\Http\Controllers\TestController@zendesk_tickets')->name('test.zendesk.api.tickets');
 Route::get('/zendesk-api/{api_id}/tickets/{tickets_id}/comments', 'App\Http\Controllers\TestController@zendesk_tickets_comments')->name('test.zendesk.api.tickets.comments');
 
+Route::get('/export', 'App\Http\Controllers\ExportController@index')->name('export.index');
+Route::post('/export/file', 'App\Http\Controllers\ExportController@export_file')->name('export.file');
+Route::get('/export/autocomplete-author', 'App\Http\Controllers\ExportController@autocomplete_author')->name('export.autocomplete-author');
+Route::get('/export/autocomplete-domain', 'App\Http\Controllers\ExportController@autocomplete_domain')->name('export.autocomplete-domain');
+Route::get('/export/autocomplete-ip', 'App\Http\Controllers\ExportController@autocomplete_ip')->name('export.autocomplete-ip');
+
+Route::get('/export/file/attachment/{comment}/{attachment_id}', 'App\Http\Controllers\ExportController@export_file_attachment')->name('export.file.attachment');
