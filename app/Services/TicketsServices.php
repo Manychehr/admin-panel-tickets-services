@@ -19,19 +19,21 @@ class TicketsServices
             [
                 'author_id' => $ticket->submitter_id, 
                 'data' => (array)$ticket, 
-                'created_at' => new Carbon($ticket->created_at)
+                'created_at' => new Carbon($ticket->created_at),
+                'updated_at' => new Carbon($ticket->updated_at)
             ]
         );
     }
 
-    public static function updateOrCreateNew($id, $service_id, $author_id, $data, $created)
+    public static function updateOrCreateNew($id, $service_id, $author_id, $data, $created, $updated)
     {
         return Ticket::updateOrCreate(
             ['api_id' => $id, 'service_id' => $service_id],
             [
                 'author_id' => $author_id, 
                 'data' => (array)$data, 
-                'created_at' => new Carbon($created)
+                'created_at' => new Carbon($created),
+                'updated_at' => new Carbon($updated)
             ]
         );
     }

@@ -13,7 +13,9 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\UpdateDomains::class
+        Commands\UpdateDomains::class,
+        Commands\ImportTickets::class,
+        Commands\UpdateTickets::class
     ];
 
     /**
@@ -25,6 +27,10 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('update:domains')->withoutOverlapping();
+
+        $schedule->command('import:tickets')->dailyAt('21:00');
+        $schedule->command('update:tickets')->dailyAt('21:00');
+        
         
         /* $schedule->command('queue:restart')
             ->everyFiveMinutes(); */

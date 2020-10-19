@@ -123,7 +123,7 @@
                     <address>
                         Created: {{ $ticket->created_at->format('Y-m-d H:m') }}<br>
                         Author: {{ $ticket->author->name }}<br>
-                        Author email: {{ $ticket->author->data['email']?? '' }}<br>
+                        Author email: {{ $ticket->author->email?? '' }}<br>
                     </address>
                 </div>
                 <!-- END Company Info -->

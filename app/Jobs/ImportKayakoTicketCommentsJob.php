@@ -80,7 +80,8 @@ class ImportKayakoTicketCommentsJob implements ShouldQueue
                 $this->ticket->api_id, 
                 $user->api_id, // $kyTicketPost->getUserId(),
                 $this->ticket->service_id,
-                $data
+                $data,
+                $kyTicketPost->getDateline()
             );
 
             DomainsService::parsDomains($data['html_body'], $this->ticket->api_id);

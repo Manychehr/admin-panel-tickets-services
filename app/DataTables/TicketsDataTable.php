@@ -63,13 +63,17 @@ class TicketsDataTable extends DataTable
                 // return (new Carbon($model->data['created_at']))->format('Y-m-d H:m');
                 return $model->created_at->format('Y-m-d H:m');
             })
+            ->editColumn('updated_at', function (Ticket $model) {
+                return $model->updated_at->format('Y-m-d H:m');
+            })
             ->editColumn('title', function (Ticket $model) {
                 return '<a href="' . route('tickets.full-show', $model->id) . '" target="_blank">' . Str::limit($model->data['subject'], 20, ' (...)') . '</a>';
             })
             ->editColumn('author', function (Ticket $model) {
                 return Str::limit($model->author->name, 20, '...');
             })
-            ->rawColumns(['action', 'title']);
+            ->rawColumns(['action', 'title'])
+            ->removeColumn('data');
     }
 
     /**
@@ -135,10 +139,11 @@ class TicketsDataTable extends DataTable
             Column::make('api_id')->title('Id')->searchable(false)->orderable(false),
             Column::make('author')->title('Author')->orderable(false),
             Column::make('title')->searchable(false)->searchable(false)->orderable(false),
-            Column::make('created_at')->title('Date')->searchable(false)->orderable(false),
+            Column::make('created_at')->title('Date')->searchable(false),
             Column::make('domains_count')->title('Domains')->orderable(false),
             Column::make('ip_addresses_count')->title('Ip')->orderable(false),
             Column::make('in_scheme')->orderable(false)->hidden(),
+            Column::make('updated_at')->title('Updated')->searchable(false),
             
             Column::computed('action')
                     ->searchable(false)

@@ -10,7 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class ImportKayakoTicketsJob implements ShouldQueue
+class UpdateKayakoTicketsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     /**
@@ -28,19 +28,17 @@ class ImportKayakoTicketsJob implements ShouldQueue
     public $timeout = 120000;
 
     protected $service_id;
-    protected $page;
-    protected $per_page;
+    protected $limitTime;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($service_id, $page=1, $per_page=100)
+    public function __construct($service_id, $limitTime = '-1 day')
     {
         $this->service_id = $service_id;
-        $this->page = $page;
-        $this->per_page = $per_page;
+        $this->limitTime = $limitTime;
     }
 
     /**
@@ -56,13 +54,9 @@ class ImportKayakoTicketsJob implements ShouldQueue
         }
 
         $ImportKayakoService->getDepartment();
-        $there_is_tickets = $ImportKayakoService->allTickets($this->page, $this->per_page);
+        $there_is_tickets = $ImportKayakoService->getLastActivity($this->limitTime);
         if (!$there_is_tickets) {
             return;
-        }
-
-        if (!empty($page_params = $ImportKayakoService->nextPage())) {
-            // dispatch(new ImportKayakoTicketsJob($this->service_id, $this->page + 1, $this->per_page));
         }
 
         foreach ($ImportKayakoService->tickets() as $kyTicket) {

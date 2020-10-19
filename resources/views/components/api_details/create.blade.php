@@ -52,6 +52,27 @@
                     <input type="text" class="form-control" id="url" name="url" placeholder="Url..." required>
                 </div>
             </div>
+            <div class="form-group row">
+                <label class="col-12" for="limit_time">Update Limit Time (-1 day)</label>
+                <div class="col-md-12">
+                    <input type="text" class="form-control" id="limit_time" name="limit_time" placeholder="limit_time..." required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-12" for="limit_import">All Import Limit</label>
+                <div class="col-md-12">
+                    <input type="text" class="form-control" id="limit_import" name="limit_import" placeholder="limit_import..." value="100" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-12" for="current_page">Current Import Page</label>
+                <div class="col-md-12">
+                    <input type="text" class="form-control" id="current_page" name="current_page" placeholder="current_page..." value="1" required>
+                </div>
+            </div>
+            
         </div>
     </div>
     <div class="modal-footer">

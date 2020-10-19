@@ -25,7 +25,8 @@ class AuthorsDataTable extends DataTable
             ->addColumn('action', 'components.author.crud_buttons')
             ->editColumn('service_id', function (Author $model) {
                 return $model->service->name;
-            });
+            })
+            ->removeColumn('data');
     }
 
     /**

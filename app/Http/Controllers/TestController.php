@@ -6,6 +6,7 @@ use App\Services\DomainsService;
 use App\Services\ImportKayakoService;
 use App\Services\KayakoService;
 use App\Services\ParsService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TestController extends AuthBaseController
@@ -37,11 +38,12 @@ class TestController extends AuthBaseController
     {
         $api = \App\Services\ImportZendeskService::getApi((int)$api_id);
         
-        if ($api->allTickets($request->get('page', 1), $request->get('per_page', 100))) {
+        /* if ($api->allTickets($request->get('page', 1), $request->get('per_page', 100))) {
             ddd($api->tickets());
-        }
+        } */
         
-        ddd($api->errors_api);
+        // ddd($api->errors_api);
+        ddd($api->getLastActivity('-16 day'));
     }
 
     public function zendesk_tickets_comments(Request $request, $api_id, $tickets_id)
@@ -105,25 +107,33 @@ class TestController extends AuthBaseController
         
 
         //dd($ImportKayakoService->tickets());
-        $kayako = KayakoService::getApi(2);
-
+        /**
+         * @var \App\Services\ImportKayakoService
+         */
+        $kayako = ImportKayakoService::getApi(2);
+        $kayako->getDepartment();
         /* $default_status_id = kyTicketStatus::getAll()->filterByTitle("Open")->first()->getId();
         $default_priority_id = kyTicketPriority::getAll()->filterByTitle("Normal")->first()->getId();
         $default_type_id = kyTicketType::getAll()->filterByTitle("Issue")->first()->getId(); */
         // kyTicket::setDefaults($default_status_id, $default_priority_id, $default_type_id);
-
+        // $import_at = (Carbon::today()->modify('-1 day'))->getTimestamp();
+        $kayako->getLastActivity('-1 day');
         //$general_department = \App\KayakoApi\kyDepartment::getAll();
             // ->filterByTitle("General")
-            //$general_department = $general_department->filterByModule(\App\KayakoApi\kyDepartment::MODULE_TICKETS)
-            /* ->first() */;
+       // $general_department = $general_department->filterByModule(\App\KayakoApi\kyDepartment::MODULE_TICKETS)->collectId();
+            /* ->first() ;*/
         // $kayako->getDepartment();
        // $ticket = $kayako->getPage(5, 10); 
-        // $ticket = \App\KayakoApi\kyTicket::getAll($general_department, [], [], [], 20, 1); //->getPage(2, 1);
+       //$tickets = \App\KayakoApi\kyTicket::getListAll($general_department, [], [], [], 1000, 1, 'lastactivity', 'desc');
+                    // ->filterByLastActivity(['>', $import_at]);
 
+
+            
         ddd([
-            //$ticket->first(),
-            $kayako->getTicketComments(337368),
-            $kayako->errors_api
+            // $import_at,
+            $kayako->tickets(),
+            // \App\KayakoApi\kyTicket::getStatistics(),
+            //$kayako->errors_api
             // 
             //\App\KayakoApi\kyTicket::getAll($general_department, [], [], [], 20, 300),
             //$general_department 

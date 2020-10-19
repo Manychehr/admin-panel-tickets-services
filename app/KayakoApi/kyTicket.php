@@ -651,6 +651,57 @@ class kyTicket extends kyObjectWithCustomFieldsBase
 	}
 
 	/**
+	 * GET /Tickets/Ticket/ListAll/$departmentid$/$ticketstatusid$/$ownerstaffid$/$userid$/$count$/$start$/$sortField$/$sortOrder$
+	 */
+	public static function getListAll($departmentids, $ticketstatusid, $ownerstaffid, $userid, $max_items, $start, $sortField=null, $sortOrder=null) {
+
+		$search_parameters = array('ListAll');
+
+		//department
+		if (count($departmentids) === 0) {
+			throw new \InvalidArgumentException('You must provide at least one department to search for tickets.');
+		}
+
+		$search_parameters[] = implode(',', $departmentids);
+
+		//ticket status
+		if (count($ticketstatusid) > 0) {
+			$search_parameters[] = implode(',', $ticketstatusid);
+		} else {
+			$search_parameters[] = '-1';
+		}
+
+		//owner staff
+		if (count($ownerstaffid) > 0) {
+			$search_parameters[] = implode(',', $ownerstaffid);
+		} else {
+			$search_parameters[] = '-1';
+		}
+
+		//user
+		if (count($userid) > 0) {
+			$search_parameters[] = implode(',', $userid);
+		} else {
+			$search_parameters[] = '-1';
+		}
+
+		if (is_numeric($start) && $start > 0) {
+			if (!is_numeric($max_items) || $max_items <= 0) {
+				$max_items = 1000;
+			}
+			$search_parameters[] = $max_items;
+			$search_parameters[] = $start;
+		}
+
+		if (!empty($sortField) && !empty($sortOrder)) {
+			$search_parameters[] = $sortField;
+			$search_parameters[] = $sortOrder;
+		}
+
+		return parent::getAll($search_parameters);
+	}
+
+	/**
 	 * Searches for tickets based on provided data. You must provide at least one department identifier.
 	 *
 	 * @param kyDepartment|kyResultSet $departments Non-empty list of department identifiers.
@@ -1483,6 +1534,15 @@ class kyTicket extends kyObjectWithCustomFieldsBase
 		}
 
 		return date($format, $this->last_activity);
+	}
+
+	public function get_last_activity()
+	{
+		if ($this->last_activity == null) {
+			return null;
+		}
+
+		return $this->last_activity;
 	}
 
 	/**

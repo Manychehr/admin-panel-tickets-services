@@ -43,14 +43,16 @@ class CommentsDataTable extends DataTable
                 return 'anonim ';
             })
             ->editColumn('created', function (Comment $model) {
-                return (new Carbon($model->data['created_at']))->format('Y-m-d H:m');
+               /*  return (new Carbon($model->data['created_at']))->format('Y-m-d H:m'); */
+                return (new Carbon($model->created_at))->format('Y-m-d H:m');
             })
             /* ->editColumn('content', function (Comment $model) {
                 return $model->data['html_body'];
             }) 
             */
             ->addColumn('details_content', 'components.tickets.html_body')
-            ->rawColumns(['details_content']);
+            ->rawColumns(['details_content'])
+            ->removeColumn('data');
     }
 
     /**

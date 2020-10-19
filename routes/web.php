@@ -40,6 +40,7 @@ Route::resource('/domains', 'App\Http\Controllers\DomainController');
 
 Route::resource('/api_tickets', 'App\Http\Controllers\ApiTicketController');
 Route::post('/api_tickets/{api_ticket}/send-import', 'App\Http\Controllers\ApiTicketController@send_import');
+Route::post('/api_tickets/{api_ticket}/send-update', 'App\Http\Controllers\ApiTicketController@send_update');
 
 Route::get('/test', 'App\Http\Controllers\TestController@index')->name('test.index');
 Route::post('/test', 'App\Http\Controllers\TestController@test')->name('test.test');
@@ -59,3 +60,5 @@ Route::get('/export/autocomplete-domain', 'App\Http\Controllers\ExportController
 Route::get('/export/autocomplete-ip', 'App\Http\Controllers\ExportController@autocomplete_ip')->name('export.autocomplete-ip');
 
 Route::get('/export/file/attachment/{comment}/{attachment_id}', 'App\Http\Controllers\ExportController@export_file_attachment')->name('export.file.attachment');
+
+Route::get('/queue', 'App\Http\Controllers\QueueStatusController@index')->name('queue.index');

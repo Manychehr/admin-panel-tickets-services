@@ -6,6 +6,8 @@ use App\DataTables\ApiTicketDataTable;
 use App\Http\Requests\StoreApiTicketRequest;
 use App\Jobs\ImportKayakoTicketsJob;
 use App\Jobs\ImportZendeskTicketsJob;
+use App\Jobs\UpdateKayakoTicketsJob;
+use App\Jobs\UpdateZendeskTicketsJob;
 use App\Models\ApiTicket;
 use Illuminate\Http\Request;
 
@@ -44,7 +46,7 @@ class ApiTicketController extends Controller
     public function store(StoreApiTicketRequest $request)
     {
         ApiTicket::create(
-            $request->only(['name', 'service', 'subdomain', 'api_key', 'secret_key', 'url'])
+            $request->only(['name', 'service', 'subdomain', 'api_key', 'secret_key', 'url', 'limit_time', 'limit_import', 'current_page'])
         );
 
         return response()->json(['success' => 'New Api Details saved successfully']);
@@ -82,7 +84,7 @@ class ApiTicketController extends Controller
     public function update(StoreApiTicketRequest $request, ApiTicket $apiTicket)
     {
         $apiTicket->fill(
-            $request->only(['name', 'service', 'subdomain', 'api_key', 'secret_key', 'url'])
+            $request->only(['name', 'service', 'subdomain', 'api_key', 'secret_key', 'url', 'limit_time', 'limit_import', 'current_page', 'cron'])
         );
         $apiTicket->save();
 
@@ -106,9 +108,21 @@ class ApiTicketController extends Controller
         if ($apiTicket->service === 'zendesk') {
             dispatch(new ImportZendeskTicketsJob($apiTicket->id, 1, 100));
         } else {
-            dispatch(new ImportKayakoTicketsJob($apiTicket->id, 2, 100));
+            dispatch(new ImportKayakoTicketsJob($apiTicket->id, 1, 100));
         }
         
         return response()->json(['success' => 'Api Details send-import successfully']);
     }
+
+    public function send_update(ApiTicket $apiTicket)
+    {
+        if ($apiTicket->service === 'zendesk') {
+            dispatch(new UpdateZendeskTicketsJob($apiTicket->id, $apiTicket->limit_time));
+        } else {
+            dispatch(new UpdateKayakoTicketsJob($apiTicket->id, $apiTicket->limit_time));
+        }
+        
+        return response()->json(['success' => 'Api Details send-import successfully']);
+    }
+    
 }

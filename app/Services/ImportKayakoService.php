@@ -6,6 +6,7 @@ use App\KayakoApi\kyResultSet;
 use App\KayakoApi\kyTicket;
 use App\KayakoApi\kyTicketAttachment;
 use App\KayakoApi\kyTicketPost;
+use Carbon\Carbon;
 
 class ImportKayakoService extends KayakoService
 {
@@ -185,4 +186,28 @@ class ImportKayakoService extends KayakoService
         }
         return $data;
     }
+
+    public function getLastActivity($limitTime, $limit = 1000, $start = 1, $result = [])
+    {
+        /**
+         * @var \App\KayakoApi\kyResultSet $tickets
+         */
+        $tickets = $this->getTicketList($limit, $start, 'lastactivity', 'desc');
+        $import_at = $this->updateImportAt($limitTime);
+
+        /**
+         * @var \App\KayakoApi\kyTicket $ticket
+         */
+        foreach ($tickets as $ticket) {
+            if ($ticket->get_last_activity() >= $import_at) {
+                $result[] = $ticket;
+            }
+        }
+
+        $this->api_result =new kyResultSet($result, $tickets->getObjectsClassName());
+
+        return !empty($this->api_result) && !empty($this->api_result->count());
+    }
+
+    
 }

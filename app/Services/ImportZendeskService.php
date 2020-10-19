@@ -52,13 +52,36 @@ class ImportZendeskService extends ZendeskService
         return $this->api_result->users;
     }
 
-    /* public function getApiUpdateToDay($today=null)
+    public function searchResults()
     {
-        $apiTicket = ApiTicket::where('import_at', $today)->first();
-        if (!empty($apiTicket)) {
-            return $this->updateToDay($apiTicket);
+        if (empty($this->api_result) || empty($this->api_result->results)) {
+            return [];
         }
-        return [];
-    } */
+        return $this->api_result->results;
+    }
+
+    public function searchNextPage()
+    {
+        return $this->getNextPageParams($this->api_result);
+    }
+
+    public function getLastActivity($limitTime, $page = 1)
+    {
+        $import_at = $this->updateImportAt($limitTime);
+
+        $tickets = $this->search(
+            'type:ticket created>' . $import_at,
+            [
+                'sort_by' => 'updated_at',
+                'sort_order' => 'desc',
+                'page' => $page
+            ]
+        );
+
+        $this->api_result = $tickets;
+        return $this->api_result;
+
+        return !empty($this->api_result) && !empty($this->api_result->results);
+    }
 
 }

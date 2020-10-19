@@ -10,6 +10,7 @@ use App\KayakoApi\kyTicketAttachment;
 use App\KayakoApi\kyTicketPost;
 use App\KayakoApi\kyUser;
 use App\Models\ApiTicket;
+use Carbon\Carbon;
 use InvalidArgumentException;
 
 class KayakoService {
@@ -25,7 +26,8 @@ class KayakoService {
     public $kyConfig;
 
     /**
-     * @var array \App\KayakoApi\kyDepartment
+     * \App\KayakoApi\kyDepartment
+     * @var \App\KayakoApi\kyResultSet
      */
     public $departments;
 
@@ -192,4 +194,23 @@ class KayakoService {
         return  $attachment;
     }
 
+    public function getTicketList($max_items, $start, $sortField = null, $sortOrder = null)
+    {
+        try {
+            $tickets = kyTicket::getListAll($this->departments->collectId(), [], [], [], $max_items, $start, $sortField, $sortOrder);;
+        } catch (\Exception $e) {
+            $tickets = null; 
+            $this->errors_api[] = $e->getMessage();
+        }
+        return $tickets;
+    }
+
+    public function updateImportAt($modifyTime)
+    {
+        $import_at = Carbon::now()->modify($modifyTime); // today()
+        $this->apiTicket->import_at =  $import_at;
+        $this->apiTicket->save();
+
+        return $import_at->getTimestamp();
+    }
 }

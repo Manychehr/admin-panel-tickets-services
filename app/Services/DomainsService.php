@@ -63,4 +63,14 @@ class DomainsService
                     ->limit($limit)
                     ->get();
     }
+
+    public static function get_domains_count($days)
+    {
+        return Domain::where('updated_at','<', \Carbon\Carbon::now()->addDays($days))->count();
+    }
+
+    public static function get_count()
+    {
+        return Domain::count();
+    }
 }

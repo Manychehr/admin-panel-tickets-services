@@ -42,7 +42,7 @@ class kyConfig
 	 * Default curl request timeout value.
 	 * @var int
 	 */
-	private $timeout = 2;
+	private $timeout = 20;
 
 	/**
 	 * Default format of date object properties used in getters and setters.

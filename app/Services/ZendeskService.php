@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\ApiTicket;
+use Carbon\Carbon;
 use Config, InvalidArgumentException, BadMethodCallException;
 use Zendesk\API\HttpClient;
 
@@ -140,5 +141,19 @@ class ZendeskService {
         }
 
         return $api_result->end_time;
+    }
+
+    public function search($query, $queryParams)
+    {
+        return $this->apiClient->search()->find($query, $queryParams);
+    }
+
+    public function updateImportAt($modifyTime)
+    {
+        $import_at = Carbon::now()->modify($modifyTime); // today()
+        $this->apiTicket->import_at =  $import_at;
+        $this->apiTicket->save();
+
+        return $import_at->toIso8601ZuluString(); //format(\DateTime::ISO8601); //toIso8601String();
     }
 }
